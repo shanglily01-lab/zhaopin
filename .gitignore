@@ -1,0 +1,45 @@
+# Secrets / 真实配置
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenv
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# 运行时 / 用户上传
+uploads/
+*.log
+*.pid
+
+# 数据库采样 / 调试脚本（含真实凭据，仅本地使用）
+db_schema.txt
+db_data.txt
+inspect_db.py
+inspect_data.py
+inspect_pass.py
+
+# 需求文档（含真实凭据）
+需求文件.txt
+
+# 系统
+Thumbs.db
+ehthumbs.db

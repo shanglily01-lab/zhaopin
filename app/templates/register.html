@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}注册 - Web3 招聘{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto card p-8 shadow-soft mt-6">
+  <h1 class="text-2xl font-semibold mb-2">注册</h1>
+  <p class="text-sm text-ink-500 mb-6">已经有账号？<a class="text-brand-600 hover:underline" href="/login">直接登录</a></p>
+  {% if error %}<div class="mb-4 px-3 py-2 rounded bg-red-50 text-red-700 text-sm">{{ error }}</div>{% endif %}
+  <form method="post" action="/register" class="space-y-4" id="regform">
+    <div class="grid grid-cols-2 gap-2">
+      <label class="border rounded-lg p-3 cursor-pointer flex items-center gap-2 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+        <input type="radio" name="iscom" value="0" {% if (form.iscom or 0)|int == 0 %}checked{% endif %} class="accent-brand-500" />
+        <span>个人求职</span>
+      </label>
+      <label class="border rounded-lg p-3 cursor-pointer flex items-center gap-2 has-[:checked]:border-brand-500 has-[:checked]:bg-brand-50">
+        <input type="radio" name="iscom" value="1" {% if (form.iscom or 0)|int == 1 %}checked{% endif %} class="accent-brand-500" />
+        <span>企业 / HR</span>
+      </label>
+    </div>
+    <div>
+      <label class="label">账号 / 邮箱</label>
+      <input class="input" name="uname" required value="{{ form.uname or '' }}"/>
+    </div>
+    <div id="cname-block" style="display:none">
+      <label class="label">公司名称</label>
+      <input class="input" name="cname" value="{{ form.cname or '' }}" />
+    </div>
+    <div>
+      <label class="label">密码（至少 6 位）</label>
+      <input class="input" name="upass" type="password" required />
+    </div>
+    <div>
+      <label class="label">确认密码</label>
+      <input class="input" name="upass2" type="password" required />
+    </div>
+    <button class="btn btn-primary w-full justify-center">注册</button>
+  </form>
+</div>
+<script>
+  const form = document.getElementById('regform');
+  const cnameBlock = document.getElementById('cname-block');
+  function syncCname(){
+    const v = form.querySelector('input[name="iscom"]:checked').value;
+    cnameBlock.style.display = v === '1' ? '' : 'none';
+  }
+  form.querySelectorAll('input[name="iscom"]').forEach(r => r.addEventListener('change', syncCname));
+  syncCname();
+</script>
+{% endblock %}

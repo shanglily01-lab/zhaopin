@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ resume.nick or '候选人' }} - 简历{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto card p-8 shadow-soft">
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <div class="flex items-center gap-2 mb-2">
+        <span class="tag tag-blue">{{ resume.wtype | wtype_label }}</span>
+        <span class="tag {{ 'tag-green' if resume.isvis == 1 else 'tag-gray' }}">{{ '公开' if resume.isvis == 1 else '隐藏' }}</span>
+        {% if resume.isen == 1 %}<span class="tag tag-amber">英语沟通</span>{% endif %}
+      </div>
+      <h1 class="text-2xl font-bold">{{ resume.nick or '匿名候选人' }}</h1>
+      <p class="text-ink-500 mt-1">目标岗位：{{ resume.degree or resume.cname or '-' }}</p>
+      <p class="text-sm text-ink-500 mt-1">{{ resume.addr or '-' }} · {{ resume.edu | edu_label }} · {{ resume.exp | exp_label }}</p>
+      <p class="text-brand-600 font-semibold mt-2">期望薪资：{{ resume.salary or '面议' }} USD</p>
+    </div>
+    <div class="w-16 h-16 rounded-2xl bg-brand-50 grid place-items-center text-brand-700 text-2xl font-semibold">
+      {{ (resume.nick or '?')[0] }}
+    </div>
+  </div>
+
+  {% if restricted %}
+    <div class="mt-6 px-4 py-3 rounded-lg bg-amber-50 text-amber-700 text-sm">
+      该简历未公开或需要登录后查看完整内容。<a class="underline" href="/login">前往登录</a>
+    </div>
+  {% else %}
+    {% if resume.skills %}
+    <h2 class="text-lg font-semibold mt-6 mb-2">技能</h2>
+    <div class="flex flex-wrap gap-1.5">
+      {% for s in resume.skills | skills_list %}<span class="tag tag-gray">{{ s }}</span>{% endfor %}
+    </div>
+    {% endif %}
+
+    {% if resume.adv %}
+    <h2 class="text-lg font-semibold mt-6 mb-2">个人优势</h2>
+    <div class="prose-zh text-ink-700">{{ resume.adv }}</div>
+    {% endif %}
+
+    {% if resume.pexp %}
+    <h2 class="text-lg font-semibold mt-6 mb-2">工作 / 项目经历</h2>
+    <div class="prose-zh text-ink-700">{{ resume.pexp }}</div>
+    {% endif %}
+
+    <h2 class="text-lg font-semibold mt-6 mb-2">联系方式</h2>
+    <div class="grid grid-cols-2 gap-3 text-sm">
+      <div class="card p-3"><span class="text-ink-500 text-xs">Telegram</span><div>{{ resume.tg or '未填写' }}</div></div>
+      <div class="card p-3"><span class="text-ink-500 text-xs">WhatsApp</span><div>{{ resume.ws or '未填写' }}</div></div>
+    </div>
+  {% endif %}
+
+  {% if owner %}
+    <div class="mt-6 flex gap-2">
+      <a href="/me/resume" class="btn btn-primary">编辑简历</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

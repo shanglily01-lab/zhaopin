@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}职位 - Web3 招聘{% endblock %}
+{% block content %}
+<div class="grid lg:grid-cols-[260px_1fr] gap-6">
+  <aside class="card p-5 shadow-soft h-fit sticky top-20">
+    <form method="get" action="/jobs" class="space-y-4">
+      <div>
+        <label class="label">关键词</label>
+        <input class="input" name="kw" value="{{ kw }}" placeholder="职位 / 技能 / 公司"/>
+      </div>
+      <div>
+        <label class="label">工作类型</label>
+        {% set remote_opts = [('','全部'),('1','远程'),('0','线下'),('2','均可')] %}
+        <div class="flex flex-wrap gap-1.5">
+          {% for v,t in remote_opts %}
+            <a href="?kw={{ kw }}&remote={{ v }}&alltime={{ alltime }}&urg={{ urg }}"
+               class="tag {{ 'tag-blue' if remote == v else 'tag-gray' }}">{{ t }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <div>
+        <label class="label">用工性质</label>
+        {% set all_opts = [('','全部'),('1','全职'),('0','兼职'),('2','实习'),('3','外包')] %}
+        <div class="flex flex-wrap gap-1.5">
+          {% for v,t in all_opts %}
+            <a href="?kw={{ kw }}&remote={{ remote }}&alltime={{ v }}&urg={{ urg }}"
+               class="tag {{ 'tag-blue' if alltime == v else 'tag-gray' }}">{{ t }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <div>
+        <label class="label">紧急度</label>
+        <div class="flex gap-1.5">
+          <a href="?kw={{ kw }}&remote={{ remote }}&alltime={{ alltime }}&urg=" class="tag {{ 'tag-blue' if urg=='' else 'tag-gray' }}">不限</a>
+          <a href="?kw={{ kw }}&remote={{ remote }}&alltime={{ alltime }}&urg=1" class="tag {{ 'tag-red' if urg=='1' else 'tag-gray' }}">仅看急招</a>
+        </div>
+      </div>
+      <button class="btn btn-primary w-full justify-center">搜索</button>
+    </form>
+  </aside>
+
+  <section>
+    <div class="flex items-center justify-between mb-4">
+      <h1 class="text-xl font-semibold">职位 <span class="text-ink-500 text-sm font-normal">共 {{ total }} 个</span></h1>
+      {% if user and user.iscom %}
+        <a href="/jobs/new" class="btn btn-primary">+ 发布新职位</a>
+      {% endif %}
+    </div>
+    {% if not jobs %}
+      <div class="card p-10 text-center text-ink-500">暂无匹配的职位</div>
+    {% else %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for j in jobs %}
+          {% include "_partials/job_card.html" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% include "_partials/pager.html" %}
+  </section>
+</div>
+{% endblock %}

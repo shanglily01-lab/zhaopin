@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+{% block title %}我的简历 - Web3 招聘{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto card p-8 shadow-soft">
+  <h1 class="text-2xl font-semibold">我的简历</h1>
+  <p class="text-sm text-ink-500 mt-1">完整且公开的简历会被更多企业方主动联系。</p>
+  <form method="post" action="/me/resume" class="mt-6 space-y-5" id="resumeForm">
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <label class="label">昵称 *</label>
+        <input class="input" name="nick" required value="{{ resume.nick or '' if resume else '' }}" />
+      </div>
+      <div>
+        <label class="label">所在地</label>
+        <input class="input" name="addr" placeholder="远程 / 北京 / 新加坡" value="{{ resume.addr or '' if resume else '' }}" />
+      </div>
+      <div>
+        <label class="label">期望岗位（英文）*</label>
+        <input class="input" name="degree" required value="{{ resume.degree or '' if resume else '' }}" />
+      </div>
+      <div>
+        <label class="label">期望岗位（中文）</label>
+        <input class="input" name="cname" value="{{ resume.cname or '' if resume else '' }}" />
+      </div>
+      <div>
+        <label class="label">工作类型</label>
+        <select class="input" name="wtype">
+          {% for v,t in [(1,'远程'),(0,'线下'),(2,'不限')] %}
+            <option value="{{ v }}" {% if resume and resume.wtype == v %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="label">用工性质</label>
+        <select class="input" name="isall">
+          {% for v,t in [(1,'全职'),(0,'兼职'),(2,'实习'),(3,'外包')] %}
+            <option value="{{ v }}" {% if resume and resume.isall == v %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="label">学历</label>
+        <select class="input" name="edu">
+          {% for k,v in dicts.EDU.items() %}
+            <option value="{{ k }}" {% if resume and resume.edu == k %}selected{% endif %}>{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="label">工作经验</label>
+        <select class="input" name="exp">
+          {% for k,v in dicts.EXP.items() %}
+            <option value="{{ k }}" {% if resume and resume.exp == k %}selected{% endif %}>{{ v }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="label">英语能力</label>
+        <select class="input" name="isen">
+          <option value="0" {% if not resume or resume.isen != 1 %}selected{% endif %}>中文为主</option>
+          <option value="1" {% if resume and resume.isen == 1 %}selected{% endif %}>可英语沟通</option>
+        </select>
+      </div>
+      <div>
+        <label class="label">期望薪资 (USD)</label>
+        <input class="input" name="salary" placeholder="如 3000" value="{{ resume.salary or '' if resume else '' }}" />
+      </div>
+      <div>
+        <label class="label">Telegram</label>
+        <input class="input" name="tg" value="{{ resume.tg or '' if resume else '' }}" />
+      </div>
+      <div>
+        <label class="label">WhatsApp</label>
+        <input class="input" name="ws" value="{{ resume.ws or '' if resume else '' }}" />
+      </div>
+    </div>
+    <div>
+      <label class="label">技能（空格分隔，如：Solidity Rust React）</label>
+      <input class="input" name="skills" value="{{ resume.skills or '' if resume else '' }}" />
+    </div>
+    <div>
+      <label class="label">工作 / 项目经历</label>
+      <textarea class="input min-h-[140px]" name="pexp">{{ resume.pexp or '' if resume else '' }}</textarea>
+    </div>
+    <div>
+      <div class="flex items-center justify-between">
+        <label class="label">个人优势</label>
+        <button type="button" id="polishAdv" class="text-xs text-brand-600 hover:underline">✨ AI 润色</button>
+      </div>
+      <textarea class="input min-h-[100px]" name="adv" id="adv">{{ resume.adv or '' if resume else '' }}</textarea>
+      <p id="polishMsg" class="text-xs text-ink-300 mt-1"></p>
+    </div>
+    <div>
+      <label class="label">公开状态</label>
+      <select class="input" name="isvis">
+        <option value="1" {% if not resume or resume.isvis != 0 %}selected{% endif %}>公开（企业可查看）</option>
+        <option value="0" {% if resume and resume.isvis == 0 %}selected{% endif %}>仅自己可见</option>
+      </select>
+    </div>
+    <div class="flex gap-3 items-center">
+      <button class="btn btn-primary">保存简历</button>
+      {% if resume %}<a href="/resumes/{{ resume.id }}" class="btn btn-ghost">查看预览</a>{% endif %}
+    </div>
+  </form>
+</div>
+<script>
+  document.getElementById('polishAdv').addEventListener('click', async () => {
+    const adv = document.getElementById('adv');
+    const msg = document.getElementById('polishMsg');
+    const degree = document.querySelector('input[name="degree"]').value;
+    if (!adv.value.trim()) { msg.textContent = '请先填写个人优势'; return; }
+    msg.textContent = 'AI 润色中…';
+    const fd = new FormData(); fd.append('degree', degree); fd.append('adv', adv.value);
+    try {
+      const resp = await fetch('/api/resumes/polish', { method:'POST', body: fd });
+      const data = await resp.json();
+      if (data.ok) { adv.value = data.text; msg.textContent = '已润色，请确认后保存。'; }
+      else { msg.textContent = data.msg || '润色失败'; }
+    } catch(e){ msg.textContent = '网络错误：' + e; }
+  });
+</script>
+{% endblock %}

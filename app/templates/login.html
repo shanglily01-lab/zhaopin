@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}登录 - Web3 招聘{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto card p-8 shadow-soft mt-6">
+  <h1 class="text-2xl font-semibold mb-2">登录</h1>
+  <p class="text-sm text-ink-500 mb-6">还没有账号？<a class="text-brand-600 hover:underline" href="/register">立即注册</a></p>
+  {% if error %}<div class="mb-4 px-3 py-2 rounded bg-red-50 text-red-700 text-sm">{{ error }}</div>{% endif %}
+  <form method="post" action="/login" class="space-y-4">
+    <div>
+      <label class="label">账号</label>
+      <input class="input" name="uname" required autofocus />
+    </div>
+    <div>
+      <label class="label">密码</label>
+      <input class="input" name="upass" type="password" required />
+    </div>
+    <button class="btn btn-primary w-full justify-center">登录</button>
+  </form>
+</div>
+{% endblock %}

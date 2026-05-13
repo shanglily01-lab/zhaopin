@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}企业控制台 - Web3 招聘{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold">企业控制台</h1>
+    <p class="text-sm text-ink-500 mt-1">{{ company.cname if company else '请先完善公司资料' }}</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="/me/company" class="btn btn-ghost">公司资料</a>
+    <a href="/jobs/new" class="btn btn-primary">+ 发布职位</a>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-[1fr_360px] gap-6">
+  <section>
+    <h2 class="text-lg font-semibold mb-3">我发布的职位 ({{ jobs|length }})</h2>
+    {% if not jobs %}
+      <div class="card p-10 text-center text-ink-500">尚未发布职位</div>
+    {% else %}
+    <div class="space-y-3">
+      {% for j in jobs %}
+      <div class="card p-4 shadow-soft flex items-center justify-between gap-3">
+        <div class="min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            {% if j.urg == 1 %}<span class="tag tag-red">急招</span>{% endif %}
+            <span class="tag {{ 'tag-blue' if j.isremote == 1 else 'tag-gray' }}">{{ j.isremote | remote_label }}</span>
+            <span class="tag tag-green">{{ j.isall | alltime_label }}</span>
+            <span class="tag {{ 'tag-green' if j.isopera != 0 else 'tag-gray' }}">{{ '上架中' if j.isopera != 0 else '已下架' }}</span>
+          </div>
+          <a href="/jobs/{{ j.id }}" class="font-medium hover:text-brand-600">{{ j.dname }}</a>
+          <div class="text-xs text-ink-500 mt-1">{{ j.salary or '面议' }} · {{ j.ddate | fmt_date }}</div>
+        </div>
+        <a href="/jobs/{{ j.id }}/edit" class="btn btn-ghost shrink-0">编辑</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </section>
+
+  <aside>
+    <h2 class="text-lg font-semibold mb-3">收到的简历投递 ({{ applicants|length }})</h2>
+    {% if not applicants %}
+      <div class="card p-8 text-center text-ink-500 text-sm">暂无投递</div>
+    {% else %}
+    <div class="space-y-3">
+      {% for a in applicants %}
+      <div class="card p-4 shadow-soft {{ 'ring-2 ring-brand-100' if a.isread == 0 else '' }}">
+        <div class="flex items-center justify-between text-xs text-ink-500 mb-1">
+          <span>{{ a.mdate | fmt_date }}</span>
+          {% if a.isread == 0 %}<span class="tag tag-amber">未读</span>{% endif %}
+        </div>
+        <div class="font-medium">{{ a.nick or a.applicant_name or '匿名候选人' }}</div>
+        <div class="text-xs text-ink-500 mt-0.5">投递：{{ a.job_name }}</div>
+        <div class="text-xs text-ink-500">期望：{{ a.degree or '-' }} · {{ a.salary or '-' }}</div>
+        <div class="flex justify-between items-center mt-2">
+          {% if a.resume_id %}
+            <a href="/resumes/{{ a.resume_id }}" class="text-xs text-brand-600 hover:underline">查看简历 →</a>
+          {% else %}<span class="text-xs text-ink-300">候选人未上传简历</span>{% endif %}
+          {% if a.isread == 0 %}
+            <button data-mid="{{ a.id }}" class="markRead text-xs text-ink-500 hover:text-brand-600">标记已读</button>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </aside>
+</div>
+<script>
+  document.querySelectorAll('.markRead').forEach(b => b.addEventListener('click', async () => {
+    const mid = b.dataset.mid;
+    const resp = await fetch('/api/messages/' + mid + '/read', { method:'POST' });
+    if (resp.ok) location.reload();
+  }));
+</script>
+{% endblock %}

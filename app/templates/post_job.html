@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}{{ '编辑职位' if job else '发布职位' }} - Web3 招聘{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto card p-8 shadow-soft">
+  <h1 class="text-2xl font-semibold">{{ '编辑职位' if job else '发布新职位' }}</h1>
+  <p class="text-sm text-ink-500 mt-1">公司：{{ company.cname if company else '-' }}</p>
+  <form method="post" action="{{ '/jobs/' ~ job.id ~ '/edit' if job else '/jobs/new' }}" class="mt-6 space-y-5" id="jobform">
+    <div class="grid md:grid-cols-2 gap-4">
+      <div>
+        <label class="label">英文岗位名 *</label>
+        <input class="input" name="dname" required value="{{ job.dname or '' if job else '' }}" />
+      </div>
+      <div>
+        <label class="label">中文岗位名</label>
+        <input class="input" name="cname" value="{{ job.cname or '' if job else '' }}" />
+      </div>
+      <div>
+        <label class="label">薪资</label>
+        <input class="input" name="salary" placeholder="如 3000-5000 USDT" value="{{ job.salary or '' if job else '' }}" />
+      </div>
+      <div>
+        <label class="label">工作地点</label>
+        <input class="input" name="waddr" placeholder="远程 / 北京 / 新加坡" value="{{ job.waddr or '' if job else '' }}" />
+      </div>
+      <div>
+        <label class="label">远程？</label>
+        <select class="input" name="isremote">
+          {% for v,t in [(1,'远程'),(0,'线下'),(2,'均可')] %}
+            <option value="{{ v }}" {% if job and job.isremote == v %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="label">用工性质</label>
+        <select class="input" name="isall">
+          {% for v,t in [(1,'全职'),(0,'兼职'),(2,'实习'),(3,'外包')] %}
+            <option value="{{ v }}" {% if job and job.isall == v %}selected{% endif %}>{{ t }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label class="label">紧急程度</label>
+        <select class="input" name="urg">
+          <option value="0" {% if not job or job.urg != 1 %}selected{% endif %}>普通</option>
+          <option value="1" {% if job and job.urg == 1 %}selected{% endif %}>急招</option>
+        </select>
+      </div>
+      {% if job %}
+      <div>
+        <label class="label">上下架</label>
+        <select class="input" name="isopera">
+          <option value="1" {% if job.isopera != 0 %}selected{% endif %}>上架</option>
+          <option value="0" {% if job.isopera == 0 %}selected{% endif %}>下架</option>
+        </select>
+      </div>
+      {% endif %}
+    </div>
+    <div>
+      <label class="label">技能（用空格、逗号或顿号分隔）</label>
+      <input class="input" name="skills" placeholder="Solidity Rust React 量化" value="{{ job.skills or '' if job else '' }}" />
+    </div>
+    <div>
+      <div class="flex items-center justify-between">
+        <label class="label">职位描述</label>
+        <button type="button" id="polishBtn" class="text-xs text-brand-600 hover:underline">✨ AI 润色</button>
+      </div>
+      <textarea class="input min-h-[160px]" name="ddesc" id="ddesc">{{ job.ddesc or '' if job else '' }}</textarea>
+      <p class="text-xs text-ink-300 mt-1" id="polishMsg"></p>
+    </div>
+    <div>
+      <label class="label">职位要求</label>
+      <textarea class="input min-h-[120px]" name="demark">{{ job.demark or '' if job else '' }}</textarea>
+    </div>
+    <div>
+      <label class="label">福利待遇</label>
+      <textarea class="input min-h-[80px]" name="benefit">{{ job.benefit or '' if job else '' }}</textarea>
+    </div>
+    <div class="flex items-center gap-3">
+      <button class="btn btn-primary">{{ '保存修改' if job else '立即发布' }}</button>
+      <a href="/dashboard" class="btn btn-ghost">取消</a>
+    </div>
+  </form>
+</div>
+<script>
+  document.getElementById('polishBtn').addEventListener('click', async () => {
+    const ddesc = document.getElementById('ddesc');
+    const msg = document.getElementById('polishMsg');
+    const dname = document.querySelector('input[name="dname"]').value;
+    if (!ddesc.value.trim()) { msg.textContent = '请先填写职位描述'; return; }
+    msg.textContent = '正在润色…';
+    const fd = new FormData();
+    fd.append('dname', dname);
+    fd.append('ddesc', ddesc.value);
+    try {
+      const resp = await fetch('/api/jobs/polish', { method: 'POST', body: fd });
+      const data = await resp.json();
+      if (data.ok) { ddesc.value = data.text; msg.textContent = '已润色，请确认后保存。'; }
+      else { msg.textContent = data.msg || '润色失败'; }
+    } catch (e) { msg.textContent = '网络错误：' + e; }
+  });
+</script>
+{% endblock %}

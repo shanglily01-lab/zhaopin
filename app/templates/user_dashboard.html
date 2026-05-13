@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}求职控制台 - Web3 招聘{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-2xl font-semibold">求职控制台</h1>
+    <p class="text-sm text-ink-500 mt-1">维护简历，投递职位，加入 TG 群获取最新机会。</p>
+  </div>
+  <div class="flex gap-2">
+    <a href="/me/resume" class="btn btn-primary">编辑简历</a>
+    <a href="/jobs" class="btn btn-ghost">浏览职位</a>
+  </div>
+</div>
+
+<div class="grid lg:grid-cols-[1fr_360px] gap-6">
+  <section>
+    <h2 class="text-lg font-semibold mb-3">我的简历</h2>
+    {% if not resume %}
+      <div class="card p-8 text-center">
+        <p class="text-ink-500">你还没有简历。</p>
+        <a href="/me/resume" class="btn btn-primary mt-3 inline-flex">立即创建</a>
+      </div>
+    {% else %}
+    <div class="card p-5 shadow-soft">
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <div class="font-semibold">{{ resume.nick }}</div>
+          <div class="text-sm text-ink-500 mt-0.5">{{ resume.degree or '-' }} · {{ resume.wtype | wtype_label }}</div>
+          <div class="text-sm text-ink-500 mt-0.5">{{ resume.addr or '-' }} · {{ resume.edu | edu_label }} · {{ resume.exp | exp_label }}</div>
+          <div class="text-brand-600 font-medium mt-1">期望 {{ resume.salary or '-' }} USD</div>
+        </div>
+        <div class="text-right">
+          <span class="tag {{ 'tag-green' if resume.isvis == 1 else 'tag-gray' }}">{{ '公开' if resume.isvis == 1 else '隐藏' }}</span>
+        </div>
+      </div>
+      <div class="mt-3 flex flex-wrap gap-1.5">
+        {% for s in (resume.skills | skills_list)[:8] %}<span class="tag tag-gray">{{ s }}</span>{% endfor %}
+      </div>
+      <div class="mt-4 flex gap-2">
+        <a href="/me/resume" class="btn btn-ghost">编辑</a>
+        <a href="/resumes/{{ resume.id }}" class="btn btn-ghost">预览</a>
+      </div>
+    </div>
+    {% endif %}
+  </section>
+
+  <aside>
+    <h2 class="text-lg font-semibold mb-3">投递记录 ({{ applies|length }})</h2>
+    {% if not applies %}
+      <div class="card p-8 text-center text-ink-500 text-sm">暂无投递</div>
+    {% else %}
+    <div class="space-y-3">
+      {% for a in applies %}
+      <a href="/jobs/{{ a.did }}" class="card p-4 shadow-soft block hover:shadow-card hover:-translate-y-0.5 transition">
+        <div class="flex items-center gap-3">
+          {% if a.clogo %}
+            <img src="https://cdn.jobsofweb3.com/logo/{{ a.clogo }}" class="w-10 h-10 rounded-lg object-cover bg-slate-100" onerror="this.style.display='none'"/>
+          {% else %}
+            <div class="w-10 h-10 rounded-lg bg-brand-50 grid place-items-center text-brand-700 font-semibold">{{ (a.company_name or '?')[0] }}</div>
+          {% endif %}
+          <div class="min-w-0">
+            <div class="font-medium truncate">{{ a.dname }}</div>
+            <div class="text-xs text-ink-500 truncate">{{ a.company_name }}</div>
+          </div>
+        </div>
+        <div class="flex justify-between items-center text-xs mt-2">
+          <span class="text-ink-300">{{ a.mdate | fmt_date }}</span>
+          <span class="text-brand-600 font-medium">{{ a.salary or '面议' }}</span>
+        </div>
+      </a>
+      {% endfor %}
+    </div>
+    {% endif %}
+  </aside>
+</div>
+{% endblock %}

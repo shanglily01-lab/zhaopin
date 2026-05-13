@@ -1,0 +1,32 @@
+; systemd service unit for zhaopin web app
+; 安装：sudo cp deploy/zhaopin.service /etc/systemd/system/zhaopin.service
+; 启用：sudo systemctl daemon-reload && sudo systemctl enable --now zhaopin
+; 查看：sudo systemctl status zhaopin && sudo journalctl -u zhaopin -f
+;
+; 修改前请确认 User / WorkingDirectory / ExecStart 中的路径与你的部署目录一致。
+
+[Unit]
+Description=Zhaopin Web3 Recruitment App (FastAPI + Uvicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/zhaopin
+EnvironmentFile=/opt/zhaopin/.env
+ExecStart=/opt/zhaopin/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 5020 --workers 2 --proxy-headers --forwarded-allow-ips=*
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+; 安全加固
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

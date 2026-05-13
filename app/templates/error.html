@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}{{ status }} - Web3 招聘{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto card p-10 shadow-soft text-center mt-12">
+  <div class="text-6xl font-bold text-brand-500 mb-3">{{ status }}</div>
+  <p class="text-ink-500 mb-6">{{ message }}</p>
+  <a href="/" class="btn btn-primary inline-flex">返回首页</a>
+</div>
+{% endblock %}

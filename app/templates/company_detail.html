@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ company.cname }} - Web3 招聘{% endblock %}
+{% block content %}
+<section class="card p-7 shadow-soft">
+  <div class="flex items-start gap-4">
+    {% if company.clogo %}
+      <img src="https://cdn.jobsofweb3.com/logo/{{ company.clogo }}" class="w-20 h-20 rounded-2xl object-cover bg-slate-100" onerror="this.style.display='none'"/>
+    {% else %}
+      <div class="w-20 h-20 rounded-2xl bg-brand-50 grid place-items-center text-brand-700 text-2xl font-semibold">{{ (company.cname or '?')[0] }}</div>
+    {% endif %}
+    <div class="flex-1 min-w-0">
+      <h1 class="text-2xl font-bold">{{ company.cname }}</h1>
+      <div class="text-sm text-ink-500 mt-1">{{ company.ctype | ctype_label }} · {{ company.wrks | wrks_label }}</div>
+      {% if company.cim %}<p class="mt-2 text-ink-700">{{ company.cim }}</p>{% endif %}
+      <div class="mt-3 flex flex-wrap gap-1.5">
+        {% for ch in company.chains | chains_labels %}<span class="tag tag-blue">{{ ch }}</span>{% endfor %}
+      </div>
+    </div>
+    {% if user and user.iscom and user.cid == company.id %}
+      <a href="/me/company" class="btn btn-ghost">编辑公司资料</a>
+    {% endif %}
+  </div>
+  {% if company.cdesc %}
+    <h2 class="text-lg font-semibold mt-6 mb-2">公司介绍</h2>
+    <div class="prose-zh text-ink-700">{{ company.cdesc }}</div>
+  {% endif %}
+  <div class="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+    {% if company.cnet %}<div class="card p-3"><span class="text-xs text-ink-500">官网</span><div class="truncate"><a class="text-brand-600 hover:underline" href="{{ company.cnet }}" target="_blank" rel="noopener">{{ company.cnet }}</a></div></div>{% endif %}
+    {% if company.tg %}<div class="card p-3"><span class="text-xs text-ink-500">Telegram</span><div class="truncate">{{ company.tg }}</div></div>{% endif %}
+    {% if company.ws %}<div class="card p-3"><span class="text-xs text-ink-500">WhatsApp</span><div class="truncate">{{ company.ws }}</div></div>{% endif %}
+    {% if company.tt %}<div class="card p-3"><span class="text-xs text-ink-500">Twitter</span><div class="truncate">{{ company.tt }}</div></div>{% endif %}
+    {% if company.disc %}<div class="card p-3"><span class="text-xs text-ink-500">Discord</span><div class="truncate">{{ company.disc }}</div></div>{% endif %}
+    {% if company.git %}<div class="card p-3"><span class="text-xs text-ink-500">Github</span><div class="truncate">{{ company.git }}</div></div>{% endif %}
+  </div>
+</section>
+
+<section class="mt-8">
+  <h2 class="text-lg font-semibold mb-3">在招职位 ({{ jobs|length }})</h2>
+  {% if not jobs %}
+    <div class="card p-8 text-center text-ink-500">该公司暂无在招职位</div>
+  {% else %}
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {% for j in jobs %}
+    <a href="/jobs/{{ j.id }}" class="card p-5 shadow-soft hover:shadow-card hover:-translate-y-0.5 transition block">
+      <div class="flex items-center gap-2 mb-1">
+        {% if j.urg == 1 %}<span class="tag tag-red">急招</span>{% endif %}
+        <span class="tag {{ 'tag-blue' if j.isremote == 1 else 'tag-gray' }}">{{ j.isremote | remote_label }}</span>
+        <span class="tag tag-green">{{ j.isall | alltime_label }}</span>
+      </div>
+      <div class="font-semibold">{{ j.dname }}</div>
+      <div class="text-xs text-ink-500 mt-1">{{ j.waddr or '不限' }}</div>
+      <div class="mt-2 flex flex-wrap gap-1.5">
+        {% for s in (j.skills | skills_list)[:5] %}<span class="tag tag-gray">{{ s }}</span>{% endfor %}
+      </div>
+      <div class="mt-3 flex items-center justify-between text-xs">
+        <span class="text-ink-300">{{ j.ddate | fmt_date }}</span>
+        <span class="text-brand-600 font-medium">{{ j.salary or '面议' }}</span>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

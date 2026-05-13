@@ -1,0 +1,15 @@
+{% if pages and pages > 1 %}
+<nav class="mt-8 flex items-center justify-center gap-1 text-sm">
+  {% set qp = request.query_params %}
+  {% set base_q = [] %}
+  {% for k,v in qp.multi_items() %}{% if k != 'page' and v %}{% set _ = base_q.append(k ~ '=' ~ v) %}{% endif %}{% endfor %}
+  {% set qs = ('&' ~ base_q|join('&')) if base_q else '' %}
+  {% if page > 1 %}
+    <a class="px-3 py-1.5 rounded-md border bg-white hover:bg-slate-50" href="?page={{ page-1 }}{{ qs }}">上一页</a>
+  {% endif %}
+  <span class="px-3 py-1.5 text-ink-500">第 {{ page }} / {{ pages }} 页</span>
+  {% if page < pages %}
+    <a class="px-3 py-1.5 rounded-md border bg-white hover:bg-slate-50" href="?page={{ page+1 }}{{ qs }}">下一页</a>
+  {% endif %}
+</nav>
+{% endif %}

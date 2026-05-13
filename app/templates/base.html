@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Web3 招聘平台{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef4ff', 100: '#d9e6ff', 200: '#b8cdff',
+              300: '#8aabff', 400: '#5f86ff', 500: '#3a63f5',
+              600: '#274ad6', 700: '#1f3aa6', 800: '#1b3186', 900: '#152663'
+            },
+            ink: { 900: '#0b1320', 700: '#1f2937', 500: '#4b5563', 300: '#9ca3af' }
+          },
+          fontFamily: {
+            sans: ['"Inter"','"PingFang SC"','"Microsoft YaHei"','sans-serif']
+          },
+          boxShadow: {
+            soft: '0 6px 20px rgba(15,23,42,.06)',
+            card: '0 1px 2px rgba(15,23,42,.04), 0 8px 24px rgba(15,23,42,.06)'
+          }
+        }
+      }
+    }
+  </script>
+  <link href="/static/css/app.css" rel="stylesheet" />
+</head>
+<body class="bg-slate-50 text-ink-900 font-sans antialiased">
+  <header class="bg-white/95 backdrop-blur sticky top-0 z-30 border-b border-slate-100">
+    <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <a href="/" class="flex items-center gap-2 group">
+        <span class="w-9 h-9 rounded-xl bg-brand-500 grid place-items-center text-white font-bold">W3</span>
+        <span class="font-semibold text-lg group-hover:text-brand-600">Web3 招聘</span>
+      </a>
+      <nav class="hidden md:flex items-center gap-6 text-sm">
+        <a href="/jobs" class="text-ink-700 hover:text-brand-600">职位</a>
+        <a href="/companies" class="text-ink-700 hover:text-brand-600">公司</a>
+        <a href="/resumes" class="text-ink-700 hover:text-brand-600">人才</a>
+        <a href="{{ telegram_group }}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-ink-700 hover:text-brand-600">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M9.04 15.47 8.86 19c.26 0 .37-.11.5-.24l1.2-1.15 2.49 1.81c.46.25.78.12.91-.42l1.65-7.75c.16-.7-.25-.97-.7-.81L4.6 13.31c-.69.27-.68.66-.12.84l2.6.81 6.05-3.8c.29-.18.55-.08.34.12L9.04 15.47Z"/></svg>
+          加入 TG 群
+        </a>
+      </nav>
+      <div class="flex items-center gap-3 text-sm">
+        {% if user %}
+          {% if user.iscom %}
+            <a href="/jobs/new" class="hidden sm:inline-flex items-center gap-1 bg-brand-500 hover:bg-brand-600 text-white px-3 py-1.5 rounded-lg">
+              + 发布职位
+            </a>
+          {% else %}
+            <a href="/me/resume" class="hidden sm:inline-flex items-center gap-1 bg-brand-500 hover:bg-brand-600 text-white px-3 py-1.5 rounded-lg">
+              我的简历
+            </a>
+          {% endif %}
+          <a href="/dashboard" class="text-ink-700 hover:text-brand-600">控制台</a>
+          <a href="/logout" class="text-ink-300 hover:text-brand-600">退出</a>
+        {% else %}
+          <a href="/login" class="text-ink-700 hover:text-brand-600">登录</a>
+          <a href="/register" class="bg-brand-500 hover:bg-brand-600 text-white px-3 py-1.5 rounded-lg">注册</a>
+        {% endif %}
+      </div>
+    </div>
+  </header>
+
+  {% if request.query_params.get('applied') == '1' %}
+    <div class="max-w-6xl mx-auto px-6 mt-4">
+      <div class="rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 text-sm">
+        投递成功，企业方将通过控制台查看你的简历。
+      </div>
+    </div>
+  {% endif %}
+
+  <main class="max-w-6xl mx-auto px-6 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="border-t border-slate-100 bg-white mt-16">
+    <div class="max-w-6xl mx-auto px-6 py-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-ink-500">
+      <div>
+        <div class="font-semibold text-ink-700 mb-2">Web3 招聘</div>
+        <p>聚焦 Web3 / 加密 / 区块链领域的招聘平台。企业发布、个人投递，全程零佣金。</p>
+      </div>
+      <div>
+        <div class="font-semibold text-ink-700 mb-2">快速链接</div>
+        <ul class="space-y-1">
+          <li><a href="/jobs" class="hover:text-brand-600">最新职位</a></li>
+          <li><a href="/companies" class="hover:text-brand-600">入驻企业</a></li>
+          <li><a href="/resumes" class="hover:text-brand-600">人才简历</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="font-semibold text-ink-700 mb-2">加入社群</div>
+        <a href="{{ telegram_group }}" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-50 text-brand-700 hover:bg-brand-100">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M9.04 15.47 8.86 19c.26 0 .37-.11.5-.24l1.2-1.15 2.49 1.81c.46.25.78.12.91-.42l1.65-7.75c.16-.7-.25-.97-.7-.81L4.6 13.31c-.69.27-.68.66-.12.84l2.6.81 6.05-3.8c.29-.18.55-.08.34.12L9.04 15.47Z"/></svg>
+          Telegram 招聘群
+        </a>
+        <p class="mt-2 text-xs">{{ telegram_group }}</p>
+      </div>
+    </div>
+    <div class="border-t border-slate-100 py-4 text-center text-xs text-ink-300">
+      &copy; 2024-2026 Web3 招聘平台
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
