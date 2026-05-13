@@ -12,8 +12,11 @@ Wants=network-online.target
 
 [Service]
 Type=simple
-User=www-data
-Group=www-data
+; 部署前请先创建 zhaopin 系统账号（见 deploy/README.md）：
+;   sudo useradd --system --no-create-home --shell /usr/sbin/nologin zhaopin
+;   sudo chown -R zhaopin:zhaopin /opt/zhaopin
+User=zhaopin
+Group=zhaopin
 WorkingDirectory=/opt/zhaopin
 EnvironmentFile=/opt/zhaopin/.env
 ExecStart=/opt/zhaopin/.venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 5020 --workers 2 --proxy-headers --forwarded-allow-ips=*

@@ -35,9 +35,11 @@ bash deploy/deploy.sh
 ## 四、安装 systemd 服务（开机自启 + 自动重启）
 
 ```bash
-# 如果用 www-data 跑，请改 deploy/zhaopin.service 的 User= 字段；
-# 也可以改成你自己的用户。文件目录用 /opt/zhaopin。
+# 1) 先建专用系统账号（service 文件默认 User=zhaopin）
+sudo useradd --system --no-create-home --shell /usr/sbin/nologin zhaopin
+sudo chown -R zhaopin:zhaopin /opt/zhaopin
 
+# 2) 安装并启用 service
 sudo cp deploy/zhaopin.service /etc/systemd/system/zhaopin.service
 sudo systemctl daemon-reload
 sudo systemctl enable --now zhaopin
@@ -51,10 +53,13 @@ curl -I http://127.0.0.1:5020/        # 应返回 200
 ## 五、配置 nginx（80 端口反代 + 静态资源直出）
 
 ```bash
+# Debian/Ubuntu 风格（sites-enabled）：
 sudo cp deploy/zhaopin.nginx.conf /etc/nginx/sites-available/zhaopin
-sudo ln -s /etc/nginx/sites-available/zhaopin /etc/nginx/sites-enabled/zhaopin
-# 改一下 server_name 为你的域名或公网 IP
-sudo vim /etc/nginx/sites-available/zhaopin
+sudo ln -sf /etc/nginx/sites-available/zhaopin /etc/nginx/sites-enabled/zhaopin
+
+# RHEL / CentOS / Amazon Linux 风格（conf.d）：
+# sudo cp deploy/zhaopin.nginx.conf /etc/nginx/conf.d/zhaopin.conf
+
 sudo nginx -t && sudo systemctl reload nginx
 ```
 
