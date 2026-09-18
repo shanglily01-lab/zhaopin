@@ -67,6 +67,8 @@
     </div>
   </header>
 
+  {% include "_partials/side_ads.html" %}
+
   {% if request.query_params.get('applied') == '1' %}
     <div class="max-w-6xl mx-auto px-6 mt-4">
       <div class="rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-2 text-sm">
@@ -109,5 +111,28 @@
   </footer>
 
   {% block scripts %}{% endblock %}
+  <script>
+    (function () {
+      var root = document.getElementById('site-ads');
+      if (!root) return;
+      var key = 'zp_hide_side_ads';
+      function hideAds() {
+        root.hidden = true;
+        document.body.classList.add('ads-closed');
+        sessionStorage.setItem(key, '1');
+      }
+      if (sessionStorage.getItem(key) === '1') {
+        hideAds();
+        return;
+      }
+      root.querySelectorAll('[data-ad-close]').forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          hideAds();
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

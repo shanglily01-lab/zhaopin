@@ -44,6 +44,7 @@ def render(request: Request, name: str, status_code: int = 200, **ctx):
     base = {
         "user": user,
         "telegram_group": settings.TELEGRAM_GROUP,
+        "ad_url": settings.AD_URL,
         "dicts": dicts,
     }
     base.update(ctx)

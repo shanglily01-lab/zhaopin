@@ -21,6 +21,10 @@ class Settings:
 
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
     TELEGRAM_GROUP: str = os.getenv("TELEGRAM_GROUP", "https://t.me/jobsofweb3")
+    AD_URL: str = os.getenv(
+        "AD_URL",
+        "https://chainpoker.io?wsp=eyJjaWQiOiIxMDAwMSIsImFpZCI6IjUwMDA1In0%3D",
+    )
 
     UPLOAD_DIR: Path = ROOT_DIR / "uploads"
     STATIC_DIR: Path = ROOT_DIR / "app" / "static"
