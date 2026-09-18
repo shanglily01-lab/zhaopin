@@ -19,12 +19,21 @@
 .btn-ghost:hover { background:#f8fafc; }
 .label { display:block; font-size:12px; color:#475569; margin-bottom:4px; font-weight:500; }
 
-/* 对联广告：宽屏挂主栏两侧，窄屏收成底部条 */
-.side-ad {
+/* 对联广告：固定浮层，不占文档流，只落在主栏两侧空白里 */
+.site-ads {
   position: fixed;
-  top: 96px;
-  z-index: 25;
-  width: 148px;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+.site-ads[hidden] { display: none !important; }
+.side-ad,
+.side-ad-mobile { pointer-events: auto; }
+
+.side-ad {
+  position: absolute;
+  top: 88px;
+  width: 132px;
   display: none;
   color: #f8f1d8;
   background:
@@ -36,8 +45,9 @@
   overflow: hidden;
   transition: transform .18s ease;
 }
-.side-ad--left { left: 10px; }
-.side-ad--right { right: 10px; }
+/* 贴着 max-w-6xl(1152px) 主栏外侧，左右各留 12px 缝 */
+.side-ad--left { left: calc(50% - 576px - 144px); }
+.side-ad--right { right: calc(50% - 576px - 144px); }
 .side-ad__close {
   position: absolute;
   top: 6px;
@@ -58,7 +68,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 16px 10px 14px;
+  padding: 14px 10px 12px;
   text-align: center;
   color: inherit;
   text-decoration: none;
@@ -74,30 +84,30 @@
 }
 .side-ad__suits {
   font-family: "Segoe UI Symbol", "Apple Color Emoji", "Noto Sans Symbols", sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   letter-spacing: .18em;
   color: #e8c547;
   margin-bottom: 4px;
 }
 .side-ad__brand {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: .04em;
   color: #fff8e7;
 }
 .side-ad__tagline {
   margin-top: 2px;
-  font-size: 12px;
+  font-size: 11px;
   color: #d7c58a;
 }
 .side-ad__qr {
   margin: 10px 0 8px;
-  padding: 6px;
+  padding: 5px;
   background: #fffaf0;
   border-radius: 10px;
   box-shadow: 0 0 0 1px rgba(232, 197, 71, .35);
 }
-.side-ad__qr img { display: block; width: 112px; height: 112px; }
+.side-ad__qr img { display: block; width: 96px; height: 96px; }
 .side-ad__hint { font-size: 11px; color: rgba(248, 241, 216, .72); }
 .side-ad__cta {
   margin-top: 8px;
@@ -105,7 +115,7 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 30px;
+  height: 28px;
   border-radius: 999px;
   background: linear-gradient(180deg, #f0d36a 0%, #c9a227 100%);
   color: #2a1d04;
@@ -113,19 +123,18 @@
   font-weight: 700;
 }
 .side-ad:hover { transform: translateY(-2px); }
-.site-ads[hidden] { display: none !important; }
-body.ads-closed { padding-bottom: 0 !important; }
 
 .side-ad-mobile {
   display: none;
-  position: fixed;
-  left: 12px;
+  position: absolute;
   right: 12px;
   bottom: 12px;
+  left: auto;
+  width: min(300px, calc(100% - 24px));
   z-index: 40;
   align-items: center;
   gap: 8px;
-  padding: 8px 8px 8px 8px;
+  padding: 8px;
   background: linear-gradient(90deg, #173528 0%, #0d2419 100%);
   border: 1px solid rgba(232, 197, 71, .5);
   border-radius: 16px;
@@ -186,15 +195,11 @@ body.ads-closed { padding-bottom: 0 !important; }
   cursor: pointer;
 }
 
-@media (min-width: 1520px) {
+/* 主栏 1152 + 两侧广告 132*2 + 缝 12*2 ≈ 1476，更窄就藏侧栏，避免压住内容 */
+@media (min-width: 1480px) {
   .side-ad { display: block; }
 }
-@media (min-width: 1680px) {
-  .side-ad { width: 156px; }
-  .side-ad--left { left: max(16px, calc(50% - 36rem - 172px)); }
-  .side-ad--right { right: max(16px, calc(50% - 36rem - 172px)); }
-}
-@media (max-width: 1519px) {
+@media (max-width: 767px) {
+  .side-ad { display: none !important; }
   .side-ad-mobile { display: flex; }
-  body { padding-bottom: 76px; }
 }

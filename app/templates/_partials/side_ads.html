@@ -1,15 +1,15 @@
-{# 全站对联广告：宽屏挂左右两侧，窄屏改底部条，均带二维码。 #}
-{% set ad_href = ad_url %}
-<aside id="site-ads" class="site-ads" aria-label="赞助广告">
+{# 全站对联广告：浮层定位，不占文档流，避免撑乱主栏布局。 #}
+<aside id="site-ads" class="site-ads" aria-label="赞助广告"
+       style="position:fixed;inset:0;z-index:20;pointer-events:none;">
   <article class="side-ad side-ad--left">
     <button type="button" class="side-ad__close" data-ad-close aria-label="关闭广告">×</button>
-    <a class="side-ad__link" href="{{ ad_href }}" target="_blank" rel="noopener noreferrer sponsored">
+    <a class="side-ad__link" href="{{ ad_url }}" target="_blank" rel="noopener noreferrer sponsored">
       <span class="side-ad__badge">广告</span>
       <span class="side-ad__suits" aria-hidden="true">♠ ♦ ♥ ♣</span>
       <strong class="side-ad__brand">ChainPoker</strong>
       <span class="side-ad__tagline">链上德州扑克</span>
       <span class="side-ad__qr">
-        <img src="/static/img/chainpoker-qr.svg" alt="ChainPoker 二维码" width="112" height="112" />
+        <img src="/static/img/chainpoker-qr.svg" alt="ChainPoker 二维码" width="96" height="96" />
       </span>
       <span class="side-ad__hint">扫码或点击进入</span>
       <span class="side-ad__cta">立即开桌</span>
@@ -18,13 +18,13 @@
 
   <article class="side-ad side-ad--right">
     <button type="button" class="side-ad__close" data-ad-close aria-label="关闭广告">×</button>
-    <a class="side-ad__link" href="{{ ad_href }}" target="_blank" rel="noopener noreferrer sponsored">
+    <a class="side-ad__link" href="{{ ad_url }}" target="_blank" rel="noopener noreferrer sponsored">
       <span class="side-ad__badge">广告</span>
       <span class="side-ad__suits" aria-hidden="true">♣ ♥ ♦ ♠</span>
       <strong class="side-ad__brand">ChainPoker</strong>
       <span class="side-ad__tagline">随时开桌 · 轻松玩</span>
       <span class="side-ad__qr">
-        <img src="/static/img/chainpoker-qr.svg" alt="ChainPoker 二维码" width="112" height="112" />
+        <img src="/static/img/chainpoker-qr.svg" alt="ChainPoker 二维码" width="96" height="96" />
       </span>
       <span class="side-ad__hint">手机扫码即玩</span>
       <span class="side-ad__cta">点击进入</span>
@@ -32,11 +32,11 @@
   </article>
 
   <div class="side-ad-mobile">
-    <a class="side-ad-mobile__link" href="{{ ad_href }}" target="_blank" rel="noopener noreferrer sponsored">
+    <a class="side-ad-mobile__link" href="{{ ad_url }}" target="_blank" rel="noopener noreferrer sponsored">
       <img src="/static/img/chainpoker-qr.svg" alt="ChainPoker 二维码" width="44" height="44" />
       <span class="side-ad-mobile__copy">
         <span class="side-ad-mobile__kicker">广告 · ChainPoker</span>
-        <strong>链上德州扑克，扫码即开桌</strong>
+        <strong>链上德州，扫码开桌</strong>
       </span>
       <span class="side-ad-mobile__cta">进入</span>
     </a>

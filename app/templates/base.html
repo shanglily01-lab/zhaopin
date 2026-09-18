@@ -28,7 +28,7 @@
       }
     }
   </script>
-  <link href="/static/css/app.css" rel="stylesheet" />
+  <link href="/static/css/app.css?v=ads2" rel="stylesheet" />
 </head>
 <body class="bg-slate-50 text-ink-900 font-sans antialiased">
   <header class="bg-white/95 backdrop-blur sticky top-0 z-30 border-b border-slate-100">
@@ -66,8 +66,6 @@
       </div>
     </div>
   </header>
-
-  {% include "_partials/side_ads.html" %}
 
   {% if request.query_params.get('applied') == '1' %}
     <div class="max-w-6xl mx-auto px-6 mt-4">
@@ -110,6 +108,7 @@
     </div>
   </footer>
 
+  {% include "_partials/side_ads.html" %}
   {% block scripts %}{% endblock %}
   <script>
     (function () {
@@ -118,7 +117,6 @@
       var key = 'zp_hide_side_ads';
       function hideAds() {
         root.hidden = true;
-        document.body.classList.add('ads-closed');
         sessionStorage.setItem(key, '1');
       }
       if (sessionStorage.getItem(key) === '1') {
