@@ -32,22 +32,23 @@
 
 .side-ad {
   position: absolute;
-  top: 88px;
-  width: 132px;
+  top: 72px;
+  bottom: 16px;
+  width: 140px;
   display: none;
   color: #f8f1d8;
   background:
-    radial-gradient(ellipse at 50% 0%, rgba(232, 197, 71, .22), transparent 58%),
-    linear-gradient(180deg, #173528 0%, #0d2419 42%, #0a1a14 100%);
+    radial-gradient(circle at 50% 12%, rgba(232, 197, 71, .18), transparent 46%),
+    repeating-linear-gradient(180deg, transparent 0 36px, rgba(255,255,255,.035) 36px 37px),
+    linear-gradient(180deg, #173528 0%, #0d2419 48%, #0a1a14 100%);
   border: 1px solid rgba(232, 197, 71, .5);
-  border-radius: 16px;
+  border-radius: 18px;
   box-shadow: 0 14px 36px rgba(8, 20, 14, .28), inset 0 1px 0 rgba(255,255,255,.08);
   overflow: hidden;
-  transition: transform .18s ease;
 }
 /* 贴着 max-w-6xl(1152px) 主栏外侧，左右各留 12px 缝 */
-.side-ad--left { left: calc(50% - 576px - 144px); }
-.side-ad--right { right: calc(50% - 576px - 144px); }
+.side-ad--left { left: calc(50% - 576px - 152px); }
+.side-ad--right { right: calc(50% - 576px - 152px); }
 .side-ad__close {
   position: absolute;
   top: 6px;
@@ -68,10 +69,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 14px 10px 12px;
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  padding: 18px 10px 16px;
   text-align: center;
   color: inherit;
   text-decoration: none;
+}
+.side-ad__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.side-ad__rail {
+  writing-mode: vertical-rl;
+  letter-spacing: .42em;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(232, 197, 71, .42);
+  margin: 18px auto;
+  flex: 1;
 }
 .side-ad__badge {
   font-size: 10px;
@@ -101,28 +119,33 @@
   color: #d7c58a;
 }
 .side-ad__qr {
-  margin: 10px 0 8px;
-  padding: 5px;
+  margin: 0 0 12px;
+  padding: 6px;
   background: #fffaf0;
   border-radius: 10px;
   box-shadow: 0 0 0 1px rgba(232, 197, 71, .35);
 }
-.side-ad__qr img { display: block; width: 96px; height: 96px; }
+.side-ad__qr img { display: block; width: 104px; height: 104px; }
+.side-ad__foot {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
 .side-ad__hint { font-size: 11px; color: rgba(248, 241, 216, .72); }
 .side-ad__cta {
-  margin-top: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 28px;
+  height: 30px;
   border-radius: 999px;
   background: linear-gradient(180deg, #f0d36a 0%, #c9a227 100%);
   color: #2a1d04;
   font-size: 12px;
   font-weight: 700;
 }
-.side-ad:hover { transform: translateY(-2px); }
 
 .side-ad-mobile {
   display: none;
@@ -195,9 +218,9 @@
   cursor: pointer;
 }
 
-/* 主栏 1152 + 两侧广告 132*2 + 缝 12*2 ≈ 1476，更窄就藏侧栏，避免压住内容 */
+/* 主栏 1152 + 两侧广告 140*2 + 缝 12*2 ≈ 1492，更窄就藏侧栏，避免压住内容 */
 @media (min-width: 1480px) {
-  .side-ad { display: block; }
+  .side-ad { display: flex; flex-direction: column; }
 }
 @media (max-width: 767px) {
   .side-ad { display: none !important; }
