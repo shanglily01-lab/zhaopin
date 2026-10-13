@@ -6,7 +6,7 @@ from datetime import date, datetime
 from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from . import dicts
+from . import ads, dicts
 from .config import settings
 from .security import current_user
 
@@ -47,5 +47,6 @@ def render(request: Request, name: str, status_code: int = 200, **ctx):
         "ad_url": settings.AD_URL,
         "dicts": dicts,
     }
+    base.update(ads.context())
     base.update(ctx)
     return templates.TemplateResponse(request, name, base, status_code=status_code)

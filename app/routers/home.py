@@ -9,6 +9,11 @@ from ..templating import render
 router = APIRouter()
 
 
+@router.get("/chainpoker")
+async def chainpoker_poster(request: Request):
+    return render(request, "poster.html")
+
+
 @router.get("/")
 async def index(request: Request):
     hot_jobs = fetch_all(

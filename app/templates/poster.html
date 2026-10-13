@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>广告海报</title>
+  <link href="/static/css/poster.css?v=2" rel="stylesheet" />
+</head>
+<body>
+  <main class="poster-shot">
+    {% if ad_poster %}
+    <a class="poster-shot__link" href="{{ ad_url }}" target="_blank" rel="noopener noreferrer sponsored">
+      <img src="{{ ad_poster }}" alt="广告海报" />
+    </a>
+    {% else %}
+    <p class="poster-shot__empty">请把海报放到 app/static/img/ads/poster.jpg</p>
+    {% endif %}
+    <a class="poster-shot__back" href="/">返回招聘首页</a>
+  </main>
+</body>
+</html>
